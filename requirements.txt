@@ -1,0 +1,35 @@
+//Install Flask 
+pip install flask 
+// run app 
+ python app.py  
+// sqlAlchamey 
+pip install flask-sqlalchemy 
+//migration
+pip install flask-migrate 
+//mail dependencey
+pip install flask-mail
+//login dependencey 
+pip install flask-login
+
+//upgrade database 
+flask db init       # only if you deleted migrations folder entirely
+>> flask db migrate -m "Initial migration"
+>> flask db upgrade
+flask db migrate -m "Add profile fields to Resume"
+ flask db upgrade
+// install all
+pip install flask flask-sqlalchemy flask-login flask-migrate flask-mail
+// env activate
+.\venv\Scripts\activate
+//flask bootsrap
+pip install flask-bootstrap
+
+// flask wtf from
+pip install flask-wtf   
+
+// flask email validator 
+pip install flask-mail
+pip install email_validator
+
+//open flask shell
+flask shell

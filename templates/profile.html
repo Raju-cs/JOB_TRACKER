@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Profile Card -->
+            <div class="card shadow-lg rounded-4 p-4">
+                <h3 class="text-center mb-4" style="color: #333;">My Profile</h3>
+                <form method="POST" enctype="multipart/form-data">
+
+                    <!-- Profile Photo -->
+                    <div class="mb-4 text-center">
+                        <label class="form-label fw-bold">Profile Photo</label><br>
+                        {% if resume and resume.photo %}
+                            <img src="{{ url_for('static', filename=resume.photo) }}" 
+                                class="img-thumbnail rounded-circle mb-3" width="120">
+                        {% else %}
+                            <p>No photo uploaded</p>
+                        {% endif %}
+                        <input type="file" name="photo" class="form-control mt-2 rounded-pill shadow-sm">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Company</label>
+                        <input type="text" name="company" class="form-control rounded-pill shadow-sm" 
+                               value="{{ resume.company if resume else '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Experience (years)</label>
+                        <input type="number" name="exprience" class="form-control rounded-pill shadow-sm" 
+                               value="{{ resume.exprience if resume else '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Skills</label>
+                        <textarea name="skill" class="form-control rounded-3 shadow-sm" rows="3">{{ resume.skill if resume else '' }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Father Name</label>
+                        <input type="text" name="father_name" class="form-control rounded-pill shadow-sm" 
+                               value="{{ resume.father_name if resume else '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Mother Name</label>
+                        <input type="text" name="mother_name" class="form-control rounded-pill shadow-sm" 
+                               value="{{ resume.mother_name if resume else '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Date of Birth</label>
+                        <input type="date" name="dob" class="form-control rounded-pill shadow-sm" 
+                               value="{{ resume.dob if resume else '' }}">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Upload Resume (PDF/DOC)</label><br>
+                        {% if resume and resume.resume_file %}
+                            <a href="{{ url_for('static', filename=resume.resume_file) }}" target="_blank">View Current Resume</a>
+                        {% endif %}
+                        <input type="file" name="resume_file" class="form-control mt-2 rounded-pill shadow-sm">
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 rounded-pill py-3 shadow-sm">Save Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Card hover effect */
+    .card:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+    }
+
+    /* Input focus */
+    .form-control:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+    }
+
+    /* Button hover */
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    /* Optional: profile img hover effect */
+    .img-thumbnail:hover {
+        transform: scale(1.05);
+        transition: all 0.3s ease;
+    }
+</style>
+{% endblock %}

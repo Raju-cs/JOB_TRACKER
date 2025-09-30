@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-gradient-primary py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold text-white mb-3">Find Your Dream Job</h1>
+                <p class="lead text-light mb-4">Discover opportunities that match your skills and ambitions</p>
+                <!-- Search Bar -->
+                <form method="GET" action="{{ url_for('jobs') }}">
+                    <div class="search-bar bg-white rounded-pill shadow-lg p-2 mb-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" name="search" class="form-control border-0" placeholder="Search for jobs, companies, or keywords" value="{{ request.args.get('search', '') }}">
+                            <button class="btn btn-primary rounded-pill px-4" type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Job Listings Section -->
+<section class="job-listings py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar Filters -->
+            <div class="col-lg-3 mb-4">
+                <form method="GET" action="{{ url_for('jobs') }}">
+                <div class="filter-card card shadow-sm border-0 sticky-top" style="top: 20px;">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Filter Jobs</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Job Type Filter -->
+                        <div class="filter-group mb-4">
+                            <h6 class="fw-semibold mb-3">Job Type</h6>
+                            {% for jt in ['Full-time','Part-time','Contract','Remote'] %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="job_type" value="{{ jt }}" 
+                                {% if jt in request.args.getlist('job_type') %}checked{% endif %}>
+                                <label class="form-check-label">{{ jt }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Experience Level Filter -->
+                        <div class="filter-group mb-4">
+                            <h6 class="fw-semibold mb-3">Experience Level</h6>
+                            {% for exp in ['Entry','Mid','Senior'] %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="experience" value="{{ exp }}" 
+                                {% if exp in request.args.getlist('experience') %}checked{% endif %}>
+                                <label class="form-check-label">{{ exp }} Level</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Location Filter -->
+                        <div class="filter-group mb-3">
+                            <h6 class="fw-semibold mb-3">Location</h6>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0">
+                                    <i class="fas fa-map-marker-alt text-muted"></i>
+                                </span>
+                                <input type="text" name="location" class="form-control border-0 bg-light" placeholder="City or country" value="{{ request.args.get('location','') }}">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary w-100 mt-3" type="submit">Apply Filters</button>
+                    </div>
+                </div>
+                </form>
+            </div>
+
+            <!-- Job Listings -->
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold">Available Jobs <span class="badge bg-primary rounded-pill">{{ jobs|length }}</span></h3>
+                   <form method="get" action="{{ url_for('jobs') }}">
+                    <div class="sort-dropdown">
+                        <select class="form-select border-0 bg-light" name="sort" onchange="this.form.submit()">
+                            <option value="newest" {% if request.args.get('sort')=='newest' %}selected{% endif %}>Newest</option>
+                            <!-- <option value="salary" {% if request.args.get('sort')=='salary' %}selected{% endif %}>Salary</option> -->
+                        </select>
+                    </div>
+                 </form>
+                </div>
+
+                <!-- Job Cards -->
+                <div class="job-list">
+                    {% for job in jobs %}
+                    <div class="job-card card shadow-sm border-0 mb-4">
+                        <div class="job-header p-4">
+                            <div class="d-flex align-items-start">
+                                <div class="company-logo me-3">
+                                    <div class="logo-placeholder bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="height: 50px; width: 50px;">
+                                        {{ job.company[:1] }}
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h3 class="job-title fw-bold mb-2">{{ job.title }}</h3>
+                                    <div class="d-flex flex-wrap align-items-center mb-2">
+                                        <span class="company-name me-3"><i class="fas fa-building me-1"></i>{{ job.company }}</span>
+                                        <div class="job-meta d-flex flex-wrap">
+                                            <div class="meta-item me-3"><i class="fas fa-map-marker-alt me-1"></i>{{ job.job_location }}</div>
+                                            <div class="meta-item"><i class="fas fa-clock me-1"></i>{{ job.job_type }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="job-content p-4 pt-0">
+                            <div class="content-section mb-3">
+                                <h5 class="section-title fw-semibold mb-2"><i class="fas fa-align-left me-2"></i>Job Description</h5>
+                                <p class="section-content text-muted mb-0">{{ job.description }}</p>
+                            </div>
+
+                            <div class="content-section mb-3">
+                                <h5 class="section-title fw-semibold mb-2"><i class="fas fa-tasks me-2"></i>Requirements</h5>
+                                <p class="section-content text-muted mb-0">{{ job.requirement }}</p>
+                            </div>
+
+                            <div class="content-section mb-3">
+                                <h5 class="section-title fw-semibold mb-2"><i class="fas fa-gift me-2"></i>Perks & Benefits</h5>
+                                <p class="section-content text-muted mb-0">{{ job.perks }}</p>
+                            </div>
+
+                            <div class="job-tags mt-3">
+                                {% for skill in (job.skill or '').split(',') %}
+                                    <span class="job-tag badge bg-light text-dark me-1 mb-1">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="job-actions p-4 pt-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="salary fw-bold text-primary mb-1">{{ job.salary }} BDT</div>
+                                    <small class="text-muted">Posted {{ job.created_at.strftime("%b %d, %Y") }}</small>
+                                </div>
+                                <div class="action-buttons d-flex">
+                                    {% if current_user.role == 'candidate' %}
+                                    <a href="{{ url_for('apply', job_id=job.id) }}" class="btn btn-primary btn-apply me-2">
+                                        <i class="fas fa-paper-plane me-2"></i>Apply Now
+                                    </a>
+                                    {% endif %}
+                                    <button class="btn btn-outline-secondary btn-save">
+                                        <i class="far fa-bookmark me-2"></i>Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Job listings pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Previous -->
+                    {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('jobs', page=pagination.prev_num, search=search, location=location, sort=sort, job_type=job_types, experience=exp_levels) }}">Previous</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Page numbers -->
+                    {% for p in range(1, pagination.pages + 1) %}
+                    <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('jobs', page=p, search=search, location=location, sort=sort, job_type=job_types, experience=exp_levels) }}">{{ p }}</a>
+                    </li>
+                    {% endfor %}
+
+                    <!-- Next -->
+                    {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('jobs', page=pagination.next_num, search=search, location=location, sort=sort, job_type=job_types, experience=exp_levels) }}">Next</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                </nav>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section bg-light py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h3 class="fw-bold mb-3">Get New Job Alerts</h3>
+                <p class="text-muted mb-4">Subscribe to our newsletter and be the first to know about new opportunities.</p>
+                <div class="input-group mb-3">
+                    <input type="email" class="form-control" placeholder="Enter your email">
+                    <button class="btn btn-primary">Subscribe</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

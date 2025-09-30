@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Edit Job</h1>
+<form method="post">
+    <h6>Title</h6>
+    <input type="text" name="title" value="{{ job.title }}" required class="form-control mb-2">
+    <h6>Description</h6>
+    <textarea name="description" required class="form-control mb-2">{{ job.description }}</textarea>
+    <h6>Company</h6>
+    <input type="text" name="company" value="{{ job.company }}" required class="form-control mb-2">
+    <h6>Job Type</h6>
+    <!-- Job Type -->
+    <select name="job_type" class="form-control mb-2" required>
+      <option value="">-- Select Job Type --</option>
+      <option value="Full-time" {% if job.job_type == "Full-time" %}selected{% endif %}>Full-time</option>
+      <option value="Part-time" {% if job.job_type == "Part-time" %}selected{% endif %}>Part-time</option>
+      <option value="Contract" {% if job.job_type == "Contract" %}selected{% endif %}>Contract</option>
+      <option value="Internship" {% if job.job_type == "Internship" %}selected{% endif %}>Internship</option>
+      <option value="Remote" {% if job.job_type == "Remote" %}selected{% endif %}>Remote</option>
+    </select>
+    <h6>Experience Level</h6>
+    <!-- Experience Level -->
+    <select name="experience_level" class="form-control mb-2" required>
+      <option value="">-- Select Experience Level --</option>
+      <option value="Entry" {% if job.experience_level == "Entry" %}selected{% endif %}>Entry Level</option>
+      <option value="Mid" {% if job.experience_level == "Mid" %}selected{% endif %}>Mid Level</option>
+      <option value="Senior" {% if job.experience_level == "Senior" %}selected{% endif %}>Senior Level</option>
+      <option value="Lead" {% if job.experience_level == "Lead" %}selected{% endif %}>Lead</option>
+    </select>
+    <h6>Job Location</h6>
+    <input type="text" name="job_location" value="{{ job.job_location }}" required class="form-control mb-2">
+    <h6>Salary</h6>
+    <input type="text" name="salary" value="{{ job.salary }}" required class="form-control mb-2">
+    <h6>Skill</h6>
+    <input type="text" name="skill" value="{{ job.skill }}" required class="form-control mb-2">
+     <h6>Requirement</h6>
+    <input type="text" name="requirement" value="{{ job.requirement }}" required class="form-control mb-2">
+     <h6>Perks</h6>
+    <input type="text" name="perks" value="{{ job.perks }}" required class="form-control mb-2">
+
+    <button type="submit" class="btn btn-primary">Update Job</button>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

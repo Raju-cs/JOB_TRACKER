@@ -1,0 +1,151 @@
+<!-- In templates/view_applications.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="fas fa-users me-2 text-primary"></i>
+                Applications for {{ job.title }}
+            </h4>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+        <div class="card-body p-0">
+            {% if applications %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Candidate</th>
+                            <th>Applied On</th>
+                            <th>Status</th>
+                            <th>Resume</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application in applications %}
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="candidate-avatar bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">{{ application.candidate.username }}</h6>
+                                        <small class="text-muted">{{ application.candidate.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ application.applied_at.strftime("%b %d, %Y") }}</small>
+                            </td>
+                            <td>
+                                {% if application.status == "pending" %}
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-clock me-1"></i> Pending
+                                    </span>
+                                {% elif application.status == "accepted" %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check me-1"></i> Accepted
+                                    </span>
+                                {% elif application.status == "applied" %}
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-paper-plane me-1"></i> Applied
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-times me-1"></i> Rejected
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if application.candidate.resume_url %}
+                                    <a href="{{ application.candidate.resume_url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-file-pdf me-1"></i> View Resume
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">No resume</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group" role="group">
+                                    <!-- Schedule Interview Button -->
+                                    <a href="{{ url_for('schedule_interview', job_id=job.id, application_id=application.id) }}" 
+                                       class="btn btn-success btn-sm">
+                                        <i class="fas fa-calendar-plus me-1"></i> Schedule Interview
+                                    </a>
+                                    
+                                    <!-- Application Status Actions -->
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                            <i class="fas fa-cog me-1"></i> Actions
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ url_for('update_application', app_id=application.id, action='accept') }}">
+                                                    <i class="fas fa-check text-success me-2"></i> Accept
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="{{ url_for('update_application', app_id=application.id, action='reject') }}">
+                                                    <i class="fas fa-times text-danger me-2"></i> Reject
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                          <li>
+                                                <a class="dropdown-item" href="{{ url_for('send_email', app_id=application.id) }}">
+                                                    <i class="fas fa-envelope me-2"></i> Send Email
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <div class="empty-state-icon mb-3">
+                    <i class="fas fa-users fa-3x text-muted"></i>
+                </div>
+                <h5 class="text-muted">No applications yet</h5>
+                <p class="text-muted">Applications will appear here when candidates apply to your job.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.candidate-avatar {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-group .btn {
+    border-radius: 0.375rem;
+}
+
+.btn-group .btn:not(:first-child) {
+    margin-left: 0.5rem;
+}
+</style>
+{% endblock %}
